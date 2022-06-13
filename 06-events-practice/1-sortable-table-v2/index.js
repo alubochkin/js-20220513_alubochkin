@@ -14,23 +14,23 @@ export default class SortableTable {
     this.arrowTemplateCreated();
     this.headerTemlateCreate();
     this.render();
-    this.sort(this.sorted.id, this.sorted.order);
+    this.sort(this.sorted.id, this.sorted.id);
     this.listener();
   }
 
   sort(fieldValue, orderValue) {
     const sortableFn = (a, b) => {
-      const collator = new Intl.Collator('ru', {
+      const collator = new Intl.Collator('ru-en', {
         sensitivity: 'case',
         caseFirst: 'upper',
         numeric: true,
       });
-      a = a[fieldValue];
-      b = b[fieldValue];
+      const sortA = a[fieldValue];
+      const sortB = b[fieldValue];
       if (orderValue === 'desc') {
-        return collator.compare(b, a);
+        return collator.compare(sortB, sortA);
       }
-      return collator.compare(a, b);
+      return collator.compare(sortA, sortB);
     };
     this.data.sort(sortableFn);
     this.render();
@@ -116,13 +116,14 @@ export default class SortableTable {
     }
 
     if (this.sorted.id === target.dataset.id) {
+      this.setArrow();
       if (this.sorted.order === 'asc') {
         this.sorted.order = 'desc';
       } else {
         this.sorted.order = 'asc';
       }
     } else this.sorted.id = target.dataset.id;
-    this.setArrow();
+
     this.sorted.id = target.dataset.id;
     this.sort(this.sorted.id, this.sorted.order);
   };

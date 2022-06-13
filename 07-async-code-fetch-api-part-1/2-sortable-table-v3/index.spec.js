@@ -7,42 +7,42 @@ const headerConfig = [
     id: 'images',
     title: 'Image',
     sortable: false,
-    template: products => {
+    template: (products) => {
       return `
         <div class="sortable-table__cell">
           <img class="sortable-table-image" alt="Image" src="${products[0].url}">
         </div>
       `;
-    }
+    },
   },
   {
     id: 'title',
     title: 'Name',
     sortable: true,
-    sortType: 'string'
+    sortType: 'string',
   },
   {
     id: 'quantity',
     title: 'Quantity',
     sortable: true,
-    sortType: 'number'
+    sortType: 'number',
   },
   {
     id: 'price',
     title: 'Price',
     sortable: true,
-    sortType: 'number'
+    sortType: 'number',
   },
   {
     id: 'status',
     title: 'Status',
     sortable: true,
     sortType: 'number',
-    template: products => {
+    template: (products) => {
       return `<div class="sortable-table__cell">
         ${products > 0 ? 'Active' : 'Inactive'}
       </div>`;
-    }
+    },
   },
 ];
 
@@ -55,9 +55,9 @@ describe('async-code-fetch-api-part-1/sortable-table-v3', () => {
     sortableTable = new SortableTable(headerConfig, {
       url: 'api/rest/products',
       sorted: {
-        id: headerConfig.find(item => item.sortable).id,
-        order: 'asc'
-      }
+        id: headerConfig.find((item) => item.sortable).id,
+        order: 'asc',
+      },
     });
 
     document.body.append(sortableTable.element);
@@ -68,7 +68,7 @@ describe('async-code-fetch-api-part-1/sortable-table-v3', () => {
     sortableTable = null;
   });
 
-  it('should be rendered correctly', async() => {
+  it('should be rendered correctly', async () => {
     document.body.append(sortableTable.element);
 
     expect(sortableTable.element).toBeVisible();
@@ -81,7 +81,7 @@ describe('async-code-fetch-api-part-1/sortable-table-v3', () => {
     expect(fetchMock.mock.calls.length).toEqual(1);
   });
 
-  it('should render loaded data correctly', async() => {
+  it('should render loaded data correctly', async () => {
     fetchMock.mockResponseOnce(JSON.stringify(products));
 
     await sortableTable.render();
@@ -92,9 +92,15 @@ describe('async-code-fetch-api-part-1/sortable-table-v3', () => {
 
     const [row1, row2, row3] = body.children;
 
-    expect(row1).toHaveTextContent('10.5\" Планшет Apple iPad Pro Wi-Fi+Cellular 64 ГБ , LTE серый');
-    expect(row2).toHaveTextContent('13.3\" Рюкзак XD Design Bobby Hero Small серый');
-    expect(row3).toHaveTextContent('13.3\" Ультрабук ASUS VivoBook S13 S330FA-EY127T серебристый');
+    expect(row1).toHaveTextContent(
+      '10.5" Планшет Apple iPad Pro Wi-Fi+Cellular 64 ГБ , LTE серый'
+    );
+    expect(row2).toHaveTextContent(
+      '13.3" Рюкзак XD Design Bobby Hero Small серый'
+    );
+    expect(row3).toHaveTextContent(
+      '13.3" Ультрабук ASUS VivoBook S13 S330FA-EY127T серебристый'
+    );
   });
 
   it('should call "sortOnClient" for sorting on the client side', async () => {
@@ -102,9 +108,9 @@ describe('async-code-fetch-api-part-1/sortable-table-v3', () => {
       url: 'api/dashboard/bestsellers',
       isSortLocally: true,
       sorted: {
-        id: headerConfig.find(item => item.sortable).id,
-        order: 'asc'
-      }
+        id: headerConfig.find((item) => item.sortable).id,
+        order: 'asc',
+      },
     });
 
     fetchMock.mockResponseOnce(JSON.stringify(bestsellers));
@@ -115,7 +121,7 @@ describe('async-code-fetch-api-part-1/sortable-table-v3', () => {
     const spy = jest.spyOn(sortableTable, 'sortOnClient');
 
     const click = new MouseEvent('pointerdown', {
-      bubbles: true
+      bubbles: true,
     });
 
     column2.dispatchEvent(click);
@@ -126,7 +132,7 @@ describe('async-code-fetch-api-part-1/sortable-table-v3', () => {
     expect(spy.mock.calls[0][1]).toEqual('desc');
   });
 
-  it('should call "sortOnServer" for sorting on the server side', async() => {
+  it('should call "sortOnServer" for sorting on the server side', async () => {
     fetchMock.mockResponseOnce(JSON.stringify(products));
 
     await sortableTable.render();
@@ -135,7 +141,7 @@ describe('async-code-fetch-api-part-1/sortable-table-v3', () => {
     const spy = jest.spyOn(sortableTable, 'sortOnServer');
 
     const click = new MouseEvent('pointerdown', {
-      bubbles: true
+      bubbles: true,
     });
 
     column2.dispatchEvent(click);
